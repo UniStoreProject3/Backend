@@ -1,12 +1,12 @@
 # UniStore
-Anggota 1
-Nama	= Ibrohim Mubarok
-NPM		= 1214081
-Kelas	= 3C
-Anggota 2
-Nama	= Fitrah Ali Akbar Setiawan
-NPM		= 1214085
-Kelas	= 3C
+Anggota 1__
+Nama	= Ibrohim Mubarok__
+NPM		= 1214081__
+Kelas	= 3C__
+Anggota 2__
+Nama	= Fitrah Ali Akbar Setiawan__
+NPM		= 1214085__
+Kelas	= 3C__
 
 ## Registrasi Akun
 
