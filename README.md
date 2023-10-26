@@ -68,7 +68,7 @@ Response bila gagal
 Link API-nya
 
 ```
-https://asia-southeast2-gis3-401509.cloudfunctions.net/UniStoreLoginUser
+https://asia-southeast2-gis3-401509.cloudfunctions.net/UniStoreMenyimpanTokenUser
 
 ```
 
