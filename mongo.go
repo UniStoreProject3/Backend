@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/aiteung/atdb"
+	"github.com/whatsauth/watoken"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -16,9 +17,19 @@ func SetConnection(MONGOCONNSTRINGENV, dbname string) *mongo.Database {
 	return atdb.MongoConnect(DBmongoinfo)
 }
 
-func GetAllBangunanLineString(mongoconn *mongo.Database, collection string) []GeoJson {
-	lokasi := atdb.GetAllDoc[[]GeoJson](mongoconn, collection)
-	return lokasi
+func CompareUsername(MongoConn *mongo.Database, Colname, username string) bool {
+	filter := bson.M{"username": username}
+	err := atdb.GetOneDoc[User](MongoConn, Colname, filter)
+	users := err.Username
+	if users == "" {
+		return false
+	}
+	return true
+}
+
+func GetNameAndPassowrd(mongoconn *mongo.Database, collection string) []User {
+	user := atdb.GetAllDoc[[]User](mongoconn, collection)
+	return user
 }
 
 func GetAllUser(mongoconn *mongo.Database, collection string) []User {
@@ -36,6 +47,27 @@ func CreateNewUserRole(mongoconn *mongo.Database, collection string, userdata Us
 	// Insert the user data into the database
 	return atdb.InsertOneDoc(mongoconn, collection, userdata)
 }
+func CreateUserAndAddedToeken(PASETOPRIVATEKEYENV string, mongoconn *mongo.Database, collection string, userdata User) interface{} {
+	// Hash the password before storing it
+	hashedPassword, err := HashPassword(userdata.Password)
+	if err != nil {
+		return err
+	}
+	userdata.Password = hashedPassword
+
+	// Insert the user data into the database
+	atdb.InsertOneDoc(mongoconn, collection, userdata)
+
+	// Create a token for the user
+	tokenstring, err := watoken.Encode(userdata.Username, os.Getenv(PASETOPRIVATEKEYENV))
+	if err != nil {
+		return err
+	}
+	userdata.Token = tokenstring
+
+	// Update the user data in the database
+	return atdb.ReplaceOneDoc(mongoconn, collection, bson.M{"username": userdata.Username}, userdata)
+}
 
 func DeleteUser(mongoconn *mongo.Database, collection string, userdata User) interface{} {
 	filter := bson.M{"username": userdata.Username}
@@ -48,8 +80,25 @@ func FindUser(mongoconn *mongo.Database, collection string, userdata User) User 
 	filter := bson.M{"username": userdata.Username}
 	return atdb.GetOneDoc[User](mongoconn, collection, filter)
 }
+
+func FindUserUser(mongoconn *mongo.Database, collection string, userdata User) User {
+	filter := bson.M{
+		"username": userdata.Username,
+	}
+	return atdb.GetOneDoc[User](mongoconn, collection, filter)
+}
+
 func IsPasswordValid(mongoconn *mongo.Database, collection string, userdata User) bool {
 	filter := bson.M{"username": userdata.Username}
 	res := atdb.GetOneDoc[User](mongoconn, collection, filter)
-	return CheckPasswordHash(userdata.Password, res.Password)
+	hashChecker := CheckPasswordHash(userdata.Password, res.Password)
+	return hashChecker
+}
+
+func InsertUserdata(MongoConn *mongo.Database, collection, username, role, password string) (InsertedID interface{}) {
+	req := new(User)
+	req.Username = username
+	req.Password = password
+	req.Role = role
+	return atdb.InsertOneDoc(MongoConn, collection, req)
 }
