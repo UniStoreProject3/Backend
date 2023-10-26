@@ -1,9 +1,9 @@
 # UniStore
-		Anggota 1
+Anggota 1
 Nama	= Ibrohim Mubarok
 NPM		= 1214081
 Kelas	= 3C
-		Anggota 2
+Anggota 2
 Nama	= Fitrah Ali Akbar Setiawan
 NPM		= 1214085
 Kelas	= 3C
