@@ -13,7 +13,7 @@ Kelas	= 3C <br />
 Link API-nya
 
 ```
-
+https://asia-southeast2-gis3-401509.cloudfunctions.net/UniStoreMembuatUser
 ```
 
 Body
@@ -26,16 +26,10 @@ Body
 }
 ```
 
-Response bila berhasil
+Response
 
 ```
-
-```
-
-Response bila gagal
-
-```
-
+{"status":true,"message":"Berhasil Input data"}
 ```
 
 ## Login Akun
@@ -45,7 +39,7 @@ Response bila gagal
 Link API-nya
 
 ```
-
+https://asia-southeast2-gis3-401509.cloudfunctions.net/UniStoreMembuatTokenUser
 ```
 
 Body
@@ -60,13 +54,13 @@ Body
 Response bila berhasil
 
 ```
-
+{"status":true,"token":"token yang didapat","message":"Selamat Datang"}
 ```
 
 Response bila gagal
 
 ```
-
+{"status":false,"message":"Password Salah"}
 ```
 
 ### Menyimpan Token
@@ -74,6 +68,7 @@ Response bila gagal
 Link API-nya
 
 ```
+https://asia-southeast2-gis3-401509.cloudfunctions.net/UniStoreLoginUser
 
 ```
 
@@ -86,13 +81,28 @@ Login : masukkan token di sini
 Response bila berhasil
 
 ```
-
+{
+    "status": true,
+    "message": "data User berhasil diambil",
+    "data": [
+        {
+            "username": "data",
+            "password": "data",
+            "role": "role"
+        },
+        {
+            "username": "data",
+            "password": "data",
+            "role": "role"
+        }
+    ]
+}
 ```
 
 Response bila gagal
 
 ```
-
+{"status":false,"message":"Data Username tidak ada di database"}
 ```
 
 ## Delete Akun
@@ -100,6 +110,7 @@ Response bila gagal
 Link API-nya
 
 ```
+https://asia-southeast2-gis3-401509.cloudfunctions.net/UniStoreHapusUser
 
 ```
 
@@ -114,11 +125,11 @@ Body
 Response bila berhasil
 
 ```
-
+{"status":false,"message":"Berhasil Delete data"}
 ```
 
 Response bila gagal
 
 ```
-
+{"status":false,"message":"error parsing application/json: EOF"}
 ```

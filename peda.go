@@ -13,7 +13,7 @@ func ReturnStruct(DataStuct any) string {
 	return string(jsondata)
 }
 
-func MembuatUser(mongoenv, dbname, collection string, r *http.Request) string {
+func MembuatUser(mongoenv, dbname, collname string, r *http.Request) string {
 	var response Credential
 	response.Status = false
 	mconn := SetConnection(mongoenv, dbname)
@@ -27,13 +27,13 @@ func MembuatUser(mongoenv, dbname, collection string, r *http.Request) string {
 		if hashErr != nil {
 			response.Message = "Gagal Hash Password" + err.Error()
 		}
-		InsertUserdata(mconn, collection, datauser.Username, datauser.Role, hash)
+		InsertUserdata(mconn, collname, datauser.Username, datauser.Role, hash)
 		response.Message = "Berhasil Input data"
 	}
 	return ReturnStruct(response)
 }
 
-func MembuatTokenUser(privatekey, mongoenv, dbname, collectionname string, r *http.Request) string {
+func MembuatTokenUser(privatekey, mongoenv, dbname, collname string, r *http.Request) string {
 	var response Credential
 	response.Status = false
 	mconn := SetConnection(mongoenv, dbname)
@@ -42,7 +42,7 @@ func MembuatTokenUser(privatekey, mongoenv, dbname, collectionname string, r *ht
 	if err != nil {
 		response.Message = "error parsing application/json: " + err.Error()
 	} else {
-		if IsPasswordValid(mconn, collectionname, datauser) {
+		if IsPasswordValid(mconn, collname, datauser) {
 			response.Status = true
 			tokenstring, err := watoken.Encode(datauser.Username, os.Getenv(privatekey))
 			if err != nil {
@@ -59,7 +59,7 @@ func MembuatTokenUser(privatekey, mongoenv, dbname, collectionname string, r *ht
 	return ReturnStruct(response)
 }
 
-func LoginUser(publickey, mongoenv, dbname, colname string, r *http.Request) string {
+func MenyimpanTokenUser(publickey, mongoenv, dbname, collname string, r *http.Request) string {
 	var response ResponseDataUser
 	mconn := SetConnection(mongoenv, dbname)
 	res := new(Response)
@@ -69,12 +69,12 @@ func LoginUser(publickey, mongoenv, dbname, colname string, r *http.Request) str
 		response.Message = "error parsing application/json: " + err.Error()
 	} else {
 		checktoken := watoken.DecodeGetId(os.Getenv(publickey), res.Token)
-		compared := CompareUsername(mconn, colname, checktoken)
+		compared := CompareUsername(mconn, collname, checktoken)
 		if compared != true {
 			response.Status = false
 			response.Message = "Data Username tidak ada di database"
 		} else {
-			datauser := GetAllUser(mconn, colname)
+			datauser := GetAllUser(mconn, collname)
 			response.Status = true
 			response.Message = "data User berhasil diambil"
 			response.Data = datauser
@@ -83,7 +83,7 @@ func LoginUser(publickey, mongoenv, dbname, colname string, r *http.Request) str
 	return ReturnStruct(response)
 }
 
-func HapusUser(mongoenv, dbname, collectionname string, r *http.Request) string {
+func HapusUser(mongoenv, dbname, collname string, r *http.Request) string {
 	var response Credential
 	response.Status = false
 	mconn := SetConnection(mongoenv, dbname)
@@ -92,7 +92,7 @@ func HapusUser(mongoenv, dbname, collectionname string, r *http.Request) string 
 	if err != nil {
 		response.Message = "error parsing application/json: " + err.Error()
 	} else {
-		DeleteUser(mconn, collectionname, datauser)
+		DeleteUser(mconn, collname, datauser)
 		response.Message = "Berhasil Delete data"
 	}
 	return ReturnStruct(response)
