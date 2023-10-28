@@ -59,30 +59,6 @@ func MembuatTokenUser(privatekey, mongoenv, dbname, collname string, r *http.Req
 	return ReturnStruct(response)
 }
 
-func MenyimpanTokenUser(publickey, mongoenv, dbname, collname string, r *http.Request) string {
-	var response ResponseDataUser
-	mconn := SetConnection(mongoenv, dbname)
-	res := new(Response)
-	err := json.NewDecoder(r.Body).Decode(&res)
-	if err != nil {
-		response.Status = false
-		response.Message = "error parsing application/json: " + err.Error()
-	} else {
-		checktoken := watoken.DecodeGetId(os.Getenv(publickey), res.Token)
-		compared := CompareUsername(mconn, collname, checktoken)
-		if compared != true {
-			response.Status = false
-			response.Message = "Data Username tidak ada di database"
-		} else {
-			datauser := GetAllUser(mconn, collname)
-			response.Status = true
-			response.Message = "data User berhasil diambil"
-			response.Data = datauser
-		}
-	}
-	return ReturnStruct(response)
-}
-
 func HapusUser(mongoenv, dbname, collname string, r *http.Request) string {
 	var response Credential
 	response.Status = false
