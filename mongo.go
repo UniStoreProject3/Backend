@@ -102,3 +102,13 @@ func InsertUserdata(mongoenv *mongo.Database, collname, username, role, password
 	req.Role = role
 	return atdb.InsertOneDoc(mongoenv, collname, req)
 }
+
+func CekRole(mongoenv *mongo.Database, collname string, userdata User) bool {
+	filter := bson.M{"role": userdata.Role}
+	err := atdb.GetOneDoc[User](mongoenv, collname, filter)
+	role := err.Role
+	if role == "admin" {
+		return true
+	}
+	return false
+}
