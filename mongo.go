@@ -109,6 +109,7 @@ func CekRole(mongoenv *mongo.Database, collname string, userdata User) bool {
 	role := err.Role
 	if role == "admin" {
 		return true
+	} else {
+		return false
 	}
-	return false
 }
