@@ -104,10 +104,32 @@ func InsertUserdata(mongoenv *mongo.Database, collname, username, role, password
 }
 
 func CekRole(mongoenv *mongo.Database, collname string, userdata User) bool {
-	filter := bson.M{"role": userdata.Role}
+	filter := bson.M{"username": userdata.Username}
 	err := atdb.GetOneDoc[User](mongoenv, collname, filter)
 	role := err.Role
 	if role == "admin" {
+		return true
+	} else {
+		return false
+	}
+}
+
+func CekRoleAdmin(mongoenv *mongo.Database, collname string, userdata User) bool {
+	filter := bson.M{"username": userdata.Username}
+	err := atdb.GetOneDoc[User](mongoenv, collname, filter)
+	role := err.Role
+	if role == "admin" {
+		return true
+	} else {
+		return false
+	}
+}
+
+func CekRoleUser(mongoenv *mongo.Database, collname string, userdata User) bool {
+	filter := bson.M{"username": userdata.Username}
+	err := atdb.GetOneDoc[User](mongoenv, collname, filter)
+	role := err.Role
+	if role == "user" {
 		return true
 	} else {
 		return false
