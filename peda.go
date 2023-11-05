@@ -101,6 +101,5 @@ func LoginDenganRole(privatekey, mongoenv, dbname, collname string, r *http.Requ
 			response.Message = "Password Salah"
 		}
 	}
-
 	return ReturnStruct(response)
 }
