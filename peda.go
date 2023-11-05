@@ -73,3 +73,34 @@ func HapusUser(mongoenv, dbname, collname string, r *http.Request) string {
 	}
 	return ReturnStruct(response)
 }
+
+func LoginDenganRole(privatekey, mongoenv, dbname, collname string, r *http.Request) string {
+	var response Credential
+	response.Status = false
+	mconn := SetConnection(mongoenv, dbname)
+	var datauser User
+	err := json.NewDecoder(r.Body).Decode(&datauser)
+	if err != nil {
+		response.Message = "error parsing application/json: " + err.Error()
+	} else {
+		if IsPasswordValid(mconn, collname, datauser) {
+			response.Status = true
+			tokenstring, err := watoken.Encode(datauser.Username, os.Getenv(privatekey))
+			if err != nil {
+				response.Message = "Gagal Encode Token : " + err.Error()
+			} else {
+				if CekRole(mconn, collname, datauser) {
+					response.Message = "Selamat Datang Admin"
+					response.Token = tokenstring
+				} else {
+					response.Message = "Selamat Datang User"
+					response.Token = tokenstring
+				}
+			}
+		} else {
+			response.Message = "Password Salah"
+		}
+	}
+
+	return ReturnStruct(response)
+}
