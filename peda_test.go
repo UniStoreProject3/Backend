@@ -184,3 +184,13 @@ func TestIsPasswordValid(t *testing.T) {
 	anu := IsPasswordValid(mconn, "user", userdata)
 	fmt.Println(anu)
 }
+
+func TestRole(t *testing.T) {
+	role := "admin"
+	if role == "admin" {
+		fmt.Println("anu")
+	} else {
+		fmt.Println("2sad")
+	}
+
+}
