@@ -95,43 +95,17 @@ func IsPasswordValid(mongoenv *mongo.Database, collname string, userdata User) b
 	return hashChecker
 }
 
+func IsRoleValid(mongoenv *mongo.Database, collname string, userdata User) bool {
+	filter := bson.M{"username": userdata.Username}
+	res := atdb.GetOneDoc[User](mongoenv, collname, filter)
+	hashChecker := CheckRoleHash(userdata.Role, res.Role)
+	return hashChecker
+}
+
 func InsertUserdata(mongoenv *mongo.Database, collname, username, role, password string) (InsertedID interface{}) {
 	req := new(User)
 	req.Username = username
 	req.Password = password
 	req.Role = role
 	return atdb.InsertOneDoc(mongoenv, collname, req)
-}
-
-func CekRole(mongoenv *mongo.Database, collname string, userdata User) bool {
-	filter := bson.M{"username": userdata.Username}
-	err := atdb.GetOneDoc[User](mongoenv, collname, filter)
-	role := err.Role
-	if role == "admin" {
-		return true
-	} else {
-		return false
-	}
-}
-
-func CekRoleAdmin(mongoenv *mongo.Database, collname string, userdata User) bool {
-	filter := bson.M{"username": userdata.Username}
-	err := atdb.GetOneDoc[User](mongoenv, collname, filter)
-	role := err.Role
-	if role == "admin" {
-		return true
-	} else {
-		return false
-	}
-}
-
-func CekRoleUser(mongoenv *mongo.Database, collname string, userdata User) bool {
-	filter := bson.M{"username": userdata.Username}
-	err := atdb.GetOneDoc[User](mongoenv, collname, filter)
-	role := err.Role
-	if role == "user" {
-		return true
-	} else {
-		return false
-	}
 }
