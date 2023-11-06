@@ -95,13 +95,6 @@ func IsPasswordValid(mongoenv *mongo.Database, collname string, userdata User) b
 	return hashChecker
 }
 
-func IsRoleValid(mongoenv *mongo.Database, collname string, userdata User) bool {
-	filter := bson.M{"username": userdata.Username}
-	res := atdb.GetOneDoc[User](mongoenv, collname, filter)
-	hashChecker := CheckRoleHash(userdata.Role, res.Role)
-	return hashChecker
-}
-
 func InsertUserdata(mongoenv *mongo.Database, collname, username, role, password string) (InsertedID interface{}) {
 	req := new(User)
 	req.Username = username
